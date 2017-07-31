@@ -1,0 +1,110 @@
+<!doctype html><html>
+<head>
+<meta charset="UTF-8">
+<title>Netgem - Test JavaScript</title>
+
+<style>
+body { font: 14px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif; background-color: transparent; color: #000; -webkit-font-smoothing: antialiased; }
+
+
+h1 { background-color:#ccc; color:#fff; font-size:28px; padding:8px 16px; margin-bottom:16px; font-weight:bold; border-radius:10px;margin-top:0;}
+#header { text-align:center; color:#fff; font-size:28px; padding:8px 16px; margin-bottom:16px; font-weight:bold; border-radius:10px; position:fixed; top:8px; right:8px;}
+#header.ok { background-color:#3c3; }
+#header.error { background-color:#c33; }
+
+.input { padding-left:0px; padding-top:8px; margin-top:8px; border-top:solid 1px #eee; clear:both; }
+.expectedoutput { color:#66c; float:right; width:52%; margin-top:0; }
+.result { padding-left:16px; width:45%; white-space : pre-wrap; }
+.output { color:#0c0; }
+.error { color:#c00; }
+.tiny { font-size:80%; }
+pre { margin-top:4px; margin-bottom:4px; }
+</style>
+
+<script type="text/javascript">
+
+var head = document.getElementsByTagName('head')[0];
+var script = document.createElement('script');
+script.type = 'text/javascript';
+script.src = 'Invoice.js';
+head.appendChild(script);
+
+function onLoad() {
+
+var commands = [
+{input: 'invoice = new Invoice("Video games")', output: '[Invoice "Video games"]'},
+{input: 'invoice.addItem("Nintendo 3DS Flame Red", 169, 2)', output: '1 item'},
+{input: 'invoice.addItem("Sony PS3 160GB", 299)', output: '2 items'},
+{input: 'invoice.getTotal()', output: '637€'},
+{input: 'invoice.print()', output: '*** INVOICE #1 - Video games ***\n* Nintendo 3DS Flame Red (169€) x 2 = 338€\n* Sony PS3 160GB (299€) x 1 = 299€\n* TOTAL = 637€'},
+
+{input: 'Invoice.setTemplate("[INVOICE #<ID>] <TITLE>", " + [<NAME> <UNITPRICE>] x <QUANTITY> : <SUBTOTAL>", " +--- TOTAL --- <TOTAL> ---")', output: 'undefined'},
+
+{input: 'invoice.print()', output: '[INVOICE #1] Video games\n + [Nintendo 3DS Flame Red 169€] x 2 : 338€\n + [Sony PS3 160GB 299€] x 1 : 299€\n +--- TOTAL --- 637€ ---'},
+
+{input: 'invoice = new Invoice()', output: '[Invoice]'},
+{input: 'invoice.addItem("iPhone 4", 629, 4)', output: '1 item'},
+{input: 'invoice.print()', output: '[INVOICE #2] <noname>\n + [iPhone 4 629€] x 4 : 2516€\n +--- TOTAL --- 2516€ ---'},
+
+{input: 'Invoice.resetTemplate()', output: 'undefined'},
+
+{input: 'invoice.print()', output: '*** INVOICE #2 - <noname> ***\n* iPhone 4 (629€) x 4 = 2516€\n* TOTAL = 2516€'},
+
+];
+
+var body = document.getElementsByTagName('body')[0];
+
+var header = document.createElement('div');
+header.setAttribute("id", "header");
+body.appendChild(header);
+
+var line = document.createElement('div');
+line.setAttribute("class", "expectedoutput tiny");
+line.textContent = 'EXPECTED OUTPUT';
+body.appendChild(line);
+    
+var errors = 0;
+
+for (var i=0, n=commands.length; i<n; i++) {
+    var command = commands[i];
+
+    line = document.createElement('pre');
+    line.setAttribute("class", "input");
+    line.textContent = command.input;
+    body.appendChild(line);
+    
+    line = document.createElement('pre');
+    line.setAttribute("class", "expectedoutput");
+    line.textContent = command.output;
+    body.appendChild(line);
+    
+    line = document.createElement('pre');
+    var nodeclass = "output";
+    try {
+        var output = "" + eval(command.input);
+    } catch (e) {
+        var output = "[JavaScript Error] " + e.constructor.name + " at line " + e.line + ":\n"
+        + e.message;
+    }
+    if (output != command.output) {
+        nodeclass = "error";
+        errors++;
+    }
+    line.setAttribute("class", nodeclass + " result");
+    line.textContent = output;
+    body.appendChild(line);
+}
+
+body.appendChild(document.createElement('pre'));
+
+header.textContent = "SCORE " + (commands.length-errors) + " / " + commands.length;
+
+header.setAttribute("class", !errors?"ok":"error");
+
+}
+</script>
+</head>
+<body onLoad="onLoad()">
+<h1>Netgem JavaScript Test</h1>
+</body>
+</html>
