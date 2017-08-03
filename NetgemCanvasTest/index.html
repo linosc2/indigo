@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Netgem • Test Canvas</title>
+	<script>
+		function ready() {
+			var canvas = document.getElementById("canvas");
+			if (!canvas) {
+				alert("Canvas not found");
+				return;
+			};
+			var space = 40;
+			var ctx = canvas.getContext("2d");
+			ctx.strokeStyle = "grey";
+			for (var i = 0, n = canvas.width / space; i<=n; i++)
+				ctx.strokeRect(i*space, 0, space, canvas.height);
+			for (var i = 0, n = canvas.height / space; i<=n; i++)
+				ctx.strokeRect(0, i*space, canvas.width,  space);
+				try {
+					drawCanvas.call(canvas, space);
+				} catch (e) {
+					var output = "[JavaScript Error] " + e.constructor.name + " at line " + e.line + ":\n" + e.message;
+					document.getElementById("output").appendChild(document.createTextNode(output));
+				}
+		}
+	</script>
+	<script src="canvas.js" type="text/javascript" charset="utf-8"></script>
+	<style>
+		body {
+			text-align:center;
+			font: 14px "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif; background-color: transparent; color: #000; -webkit-font-smoothing: antialiased;
+		}
+		canvas {
+			background-color:black;
+		}
+		#output { color:#c00; border: 1px solid #ddd; background-color: #eee; padding: 10px;}
+	</style>
+</head>
+<body onload="ready()">
+	<canvas id="canvas" width="640" height="480"></canvas>
+	<img src="RefCanvas.png"/>
+	<p id="output"></p>
+</body>
+</html>
